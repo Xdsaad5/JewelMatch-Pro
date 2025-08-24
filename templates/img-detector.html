@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JewelMatch Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #c6920c;
+            --primary-light: #f9d000;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --error: #ef4444;
+            --success: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .upload-section {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .upload-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .upload-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.75rem;
+            padding: 3rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-box:hover {
+            border-color: var(--primary);
+            background: rgba(109, 40, 217, 0.03);
+        }
+
+        .upload-box.has-image {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.03);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(150, 90, 30, 0.4);
+        }
+
+        .btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #preview {
+            max-width: 300px;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 0.5rem;
+            margin: 1rem auto;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-section {
+            padding: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .match-card {
+            background: white;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-light);
+        }
+
+        .match-img-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .match-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .match-score-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            font-size: 0.85rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 1rem;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .match-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .match-title {
+            margin: 0 0 0.5rem 0;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+
+        .match-description {
+            color: var(--dark);
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            font-style: italic;
+        }
+
+        .match-details {
+            margin-top: auto;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.4rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.9rem;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .detail-value {
+            font-weight: 500;
+        }
+
+
+        .no-matches {
+            text-align: center;
+            padding: 2rem;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Filter Section Styles */
+        .filters-section {
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+        }
+
+        .filter-title h3 {
+            margin-right: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Updated Checkbox Styles */
+        .filter-checkbox {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+            position: relative;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: 2px solid var(--primary);
+            border-radius: 3px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .filter-checkbox:checked {
+            background-color: var(--primary);
+        }
+
+        .filter-checkbox:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .weight-checkbox {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border: 2px solid var(--primary);
+            border-radius: 3px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .weight-checkbox:checked {
+            background-color: var(--primary);
+        }
+
+        .weight-checkbox:checked::after {
+            content: "✓";
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .filter-content {
+            display: none;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .filter-content.active {
+            display: block;
+        }
+
+        /* Form Grid Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .form-label {
+            text-align: right;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-input {
+            padding: 0.6rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.4rem;
+            width: 100%;
+            font-size: 0.95rem;
+        }
+
+        .form-select {
+            padding: 0.6rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.4rem;
+            width: 100%;
+            font-size: 0.95rem;
+            background-color: white;
+        }
+
+        /* Range Inputs */
+        .range-container {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            width: 100%;
+        }
+
+        .range-input {
+            flex: 1;
+        }
+
+        /* Weight Filters */
+        .weight-filter {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .weight-label {
+            min-width: 100px;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        /* Filter Actions */
+        .filter-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Search Button Alignment */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        /* Disabled input styling */
+        .form-input:disabled,
+        .form-select:disabled {
+            background-color: #f1f5f9;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Weight Filter Mobile Adjustments */
+        .weight-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .weight-checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .weight-controls {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .range-container {
+                flex: 1;
+            }
+        }
+
+        /* Adjust form grid for mobile */
+        @media (max-width: 767px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            @media (min-width: 768px) {
+                .results-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                }
+            }
+
+            .form-label {
+                text-align: left;
+                padding-bottom: 0;
+            }
+
+            .weight-filter {
+                margin-bottom: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>JewelMatch Pro</h1>
+            <p class="subtitle">Advanced jewelry recognition system</p>
+        </header>
+
+        <section class="filters-section">
+            <!-- Item Details Filter -->
+            <div class="filter-group">
+                <div class="filter-title">
+                    <input type="checkbox" id="item-checkbox" class="filter-checkbox">
+                    <h3>Item Details</h3>
+                </div>
+                <div id="item-filter" class="filter-content">
+                    <div class="form-grid">
+                        <label for="item_name" class="form-label">Item Name:</label>
+                        <select id="item-name" class="form-select" disabled>
+                            <option value="">Select item</option>
+                            {% for item in items %}
+                            <option value="{{ item }}">{{ item.itemName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Worker Details Filter -->
+            <div class="filter-group">
+                <div class="filter-title">
+                    <input type="checkbox" id="worker-checkbox" class="filter-checkbox">
+                    <h3>Worker Details</h3>
+                </div>
+                <div id="worker-filter" class="filter-content">
+                    <div class="form-grid">
+                        <label for="worker-name" class="form-label">Worker Name:</label>
+                        <select id="worker-name" class="form-select" disabled>
+                            <option value="">Select Worker</option>
+                            {% for worker in workers %}
+                            <option value="{{ worker }}">{{ worker.workerName }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date Range Filter -->
+            <div class="filter-group">
+                <div class="filter-title">
+                    <input type="checkbox" id="date-checkbox" class="filter-checkbox">
+                    <h3>Date Range</h3>
+                </div>
+                <div id="date-filter" class="filter-content">
+                    <div class="form-grid">
+                        <label for="date-from" class="form-label">From:</label>
+                        <div class="range-container">
+                            <input type="date" id="date-from" class="form-input" placeholder="dd/mm/yyyy" disabled>
+                        </div>
+
+                        <label for="date-to" class="form-label">To:</label>
+                        <div class="range-container">
+                            <input type="date" id="date-to" class="form-input" placeholder="dd/mm/yyyy" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weight Details Filter -->
+            <div class="filter-group">
+                <div class="filter-title">
+                    <input type="checkbox" id="weight-checkbox" class="filter-checkbox">
+                    <h3>Weight Details</h3>
+                </div>
+                <div id="weight-filter" class="filter-content">
+                    <div class="form-grid">
+                        <div class="form-label">Net Weight:</div>
+                        <div class="weight-controls">
+                            <input type="checkbox" id="net-weight-checkbox" class="weight-checkbox" disabled>
+                            <div class="range-container">
+                                <input type="number" id="net-weight-from" class="form-input range-input"
+                                    placeholder="From" step="0.01" min="0" disabled>
+                                <input type="number" id="net-weight-to" class="form-input range-input" placeholder="To"
+                                    step="0.01" min="0" disabled>
+                            </div>
+                        </div>
+
+                        <div class="form-label">Weight:</div>
+                        <div class="weight-controls">
+                            <input type="checkbox" id="weight-checkbox-range" class="weight-checkbox" disabled>
+                            <div class="range-container">
+                                <input type="number" id="weight-from" class="form-input range-input" placeholder="From"
+                                    step="0.01" min="0" disabled>
+                                <input type="number" id="weight-to" class="form-input range-input" placeholder="To"
+                                    step="0.01" min="0" disabled>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Actions -->
+            <div class="filter-actions">
+                <button id="resetFilters" class="btn" style="background: #64748b;">Reset Filters</button>
+                <button id="applyFilters" class="btn">Apply Filters</button>
+            </div>
+        </section>
+
+        <section class="upload-section">
+            <div class="upload-container">
+                <div id="uploadBox" class="upload-box">
+                    <div class="upload-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </div>
+                    <h3 class="upload-text">Upload Jewelry Image</h3>
+                    <p>Drag & drop or click to browse</p>
+                    <input type="file" id="imageUpload" accept="image/*" class="hidden">
+                </div>
+
+                <img id="preview" alt="Preview">
+
+                <div class="search-container">
+                    <button id="searchBtn" class="btn" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        Find Matches
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Analyzing jewelry patterns...</p>
+        </div>
+
+        <section class="results-section">
+            <h2 class="section-title">Matching Results</h2>
+            <div id="results" class="results-grid"></div>
+            <div id="noMatches" class="no-matches hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                    stroke="var(--error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                </svg>
+                <h3>No matching jewelry found</h3>
+                <p>Try with a different image or lighting condition</p>
+                </svg>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // DOM elements
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('imageUpload');
+        const preview = document.getElementById('preview');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsDiv = document.getElementById('results');
+        const noMatchesDiv = document.getElementById('noMatches');
+        const loadingDiv = document.getElementById('loading');
+        const applyFiltersBtn = document.getElementById('applyFilters');
+        const resetFiltersBtn = document.getElementById('resetFilters');
+
+        // Initialize filter toggles
+        document.addEventListener('DOMContentLoaded', function () {
+            setupFilterToggles();
+
+            // Ensure all child filters are disabled by default
+            document.querySelectorAll('#net-weight-checkbox, #weight-checkbox-range').forEach(checkbox => {
+                checkbox.disabled = true;
+                checkbox.checked = false;
+            });
+            document.querySelectorAll('#net-weight-from, #net-weight-to, #weight-from, #weight-to').forEach(input => {
+                input.disabled = true;
+                input.value = '';
+            });
+        });
+
+        function setupFilterToggles() {
+            // Main filter toggles
+            document.querySelectorAll('.filter-checkbox').forEach(checkbox => {
+                const filterContent = checkbox.closest('.filter-title').nextElementSibling;
+
+                // Set initial state - all filters start disabled
+                checkbox.checked = false;
+                filterContent.classList.remove('active');
+
+                // Add change listener
+                checkbox.addEventListener('change', function () {
+                    filterContent.classList.toggle('active', this.checked);
+                    toggleFilterInputs(this);
+                });
+            });
+
+            // Weight sub-filters
+            document.getElementById('net-weight-checkbox').addEventListener('change', function () {
+                const fromInput = document.getElementById('net-weight-from');
+                const toInput = document.getElementById('net-weight-to');
+                fromInput.disabled = !this.checked;
+                toInput.disabled = !this.checked;
+                if (!this.checked) {
+                    fromInput.value = '';
+                    toInput.value = '';
+                }
+            });
+
+            document.getElementById('weight-checkbox-range').addEventListener('change', function () {
+                const fromInput = document.getElementById('weight-from');
+                const toInput = document.getElementById('weight-to');
+                fromInput.disabled = !this.checked;
+                toInput.disabled = !this.checked;
+                if (!this.checked) {
+                    fromInput.value = '';
+                    toInput.value = '';
+                }
+            });
+
+            // Explicitly disable all weight child filters on load
+            document.getElementById('net-weight-checkbox').disabled = true;
+            document.getElementById('weight-checkbox-range').disabled = true;
+            document.getElementById('net-weight-checkbox').checked = false;
+            document.getElementById('weight-checkbox-range').checked = false;
+        }
+
+        // Call this when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            setupFilterToggles();
+
+            // Double ensure all inputs are disabled
+            document.querySelectorAll('#item-name, #worker-name, #date-from, #date-to, #net-weight-from, #net-weight-to, #weight-from, #weight-to').forEach(input => {
+                input.disabled = true;
+            });
+        });
+
+        function toggleFilterInputs(checkbox) {
+            const filterContent = checkbox.closest('.filter-title').nextElementSibling;
+
+            if (checkbox.id === 'weight-checkbox') {
+                // Special handling for weight filter
+                const weightCheckboxes = filterContent.querySelectorAll('.weight-checkbox');
+                weightCheckboxes.forEach(cb => {
+                    cb.disabled = !checkbox.checked; // Only enable if parent is checked
+                    cb.checked = false; // Ensure unchecked when toggled
+                });
+
+                // Disable all weight inputs
+                filterContent.querySelectorAll('#net-weight-from, #net-weight-to, #weight-from, #weight-to').forEach(input => {
+                    input.disabled = true;
+                    input.value = '';
+                });
+            } else {
+                // Normal filters
+                const inputs = filterContent.querySelectorAll('input:not(.weight-checkbox), select');
+                inputs.forEach(input => {
+                    input.disabled = !checkbox.checked;
+                    if (!checkbox.checked) input.value = '';
+                });
+            }
+        }
+
+        // Reset all filters
+        resetFiltersBtn.addEventListener('click', function () {
+            // Uncheck all checkboxes
+            document.querySelectorAll('.filter-checkbox, .weight-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+
+            // Hide all filter contents
+            document.querySelectorAll('.filter-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Clear and disable all inputs
+            document.querySelectorAll('.form-input, .form-select').forEach(input => {
+                input.value = '';
+                input.disabled = true;
+            });
+
+            // Specifically ensure weight sub-filters are disabled
+            document.querySelectorAll('#net-weight-checkbox, #weight-checkbox-range').forEach(checkbox => {
+                checkbox.disabled = true;
+            });
+        });
+
+        // Apply filters (currently just logs the values)
+        applyFiltersBtn.addEventListener('click', function () {
+            const filters = getActiveFilters();
+            console.log('Applied filters:', filters);
+            alert('Filters applied! Check console for details.');
+        });
+
+        // Handle drag and drop
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.classList.add('hover');
+        });
+
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.classList.remove('hover');
+        });
+
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.classList.remove('hover');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelect();
+            }
+        });
+
+        // Handle click and file selection
+        uploadBox.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // Validate image type
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file (JPEG, PNG, etc.)');
+                return;
+            }
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                uploadBox.classList.add('has-image');
+                searchBtn.disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Handle search
+        searchBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // Get active filters
+            const activeFilters = getActiveFilters();
+
+            // Show loading state
+            loadingDiv.style.display = 'block';
+            resultsDiv.innerHTML = '';
+            noMatchesDiv.classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            // Add filters to FormData
+            if (activeFilters.itemDetails) {
+                formData.append('item_name', activeFilters.itemDetails.itemName);
+            }
+
+            if (activeFilters.workerDetails) {
+                formData.append('worker_name', activeFilters.workerDetails.workerName);
+            }
+
+            if (activeFilters.dateRange) {
+                formData.append('date_from', activeFilters.dateRange.from);
+                formData.append('date_to', activeFilters.dateRange.to);
+            }
+
+            if (activeFilters.weightDetails) {
+                if (activeFilters.weightDetails.netWeightFrom !== undefined) {
+                    formData.append('net_weight_from', activeFilters.weightDetails.netWeightFrom);
+                    formData.append('net_weight_to', activeFilters.weightDetails.netWeightTo);
+                }
+                if (activeFilters.weightDetails.weightFrom !== undefined) {
+                    formData.append('weight_from', activeFilters.weightDetails.weightFrom);
+                    formData.append('weight_to', activeFilters.weightDetails.weightTo);
+                }
+            }
+
+            try {
+                const response = await fetch('/match', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                // Hide loading
+                loadingDiv.style.display = 'none';
+
+                // Display results
+                if (data.matches && data.matches.length > 0) {
+                    console.log('Matches found: data >>', data);
+                    console.log('Matches: data.matches >> ', data.matches);
+                    resultsDiv.innerHTML = data.matches.map(match => `
+                        <div class="match-card">
+                            <div class="match-img-container">
+                                <img src="${match.matched_image.path}" class="match-img" alt="Matching jewelry">
+                                <div class="match-score-badge">${(match.matched_image.score * 100).toFixed(0)}% match</div>
+                            </div>
+                            <div class="match-info">
+                                <h4 class="match-title">${match.TagNo}</h4>
+                                ${match.Description ? `<p class="match-description">${match.Description}</p>` : ''}
+                                <div class="match-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Sale No:</span>
+                                        <span class="detail-value">${match.SaleNo}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Weight:</span>
+                                        <span class="detail-value">${match.Weight || match['Weight Quantity'] || 'N/A'} g</span>
+                                    </div>
+                                    ${match['Total Net Weight'] && match['Total Net Weight'] !== null ?
+                                                `<div class="detail-item">
+                                        <span class="detail-label">Total Net Weight:</span>
+                                        <span class="detail-value">${match['Total Net Weight']} g</span>
+                                    </div>` : ''}
+                                    <div class="detail-item">
+                                        <span class="detail-label">Value:</span>
+                                        <span class="detail-value">${match.BillInWord}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    noMatchesDiv.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                loadingDiv.style.display = 'none';
+                noMatchesDiv.classList.remove('hidden');
+                noMatchesDiv.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <h3>Error processing image</h3>
+                    <p>${error.message}</p>
+                `;
+            }
+        });
+
+        // Helper function to get active filters
+        function getActiveFilters() {
+            const filters = {};
+
+            // Item Details
+            if (document.getElementById('item-checkbox').checked) {
+                const itemName = document.getElementById('item-name').value;
+                if (itemName) {
+                    filters.itemDetails = { itemName };
+                }
+            }
+
+            // Worker Details
+            if (document.getElementById('worker-checkbox').checked) {
+                const workerName = document.getElementById('worker-name').value;
+                if (workerName) {
+                    filters.workerDetails = { workerName };
+                }
+            }
+
+            // Date Range
+            if (document.getElementById('date-checkbox').checked) {
+                const dateFrom = document.getElementById('date-from').value;
+                const dateTo = document.getElementById('date-to').value;
+                if (dateFrom || dateTo) {
+                    filters.dateRange = { from: dateFrom, to: dateTo };
+                }
+            }
+
+            // Weight Details
+            if (document.getElementById('weight-checkbox').checked) {
+                filters.weightDetails = {};
+
+                // Net Weight
+                if (document.getElementById('net-weight-checkbox').checked) {
+                    const netWeightFrom = document.getElementById('net-weight-from').value;
+                    const netWeightTo = document.getElementById('net-weight-to').value;
+                    if (netWeightFrom || netWeightTo) {
+                        filters.weightDetails.netWeightFrom = netWeightFrom;
+                        filters.weightDetails.netWeightTo = netWeightTo;
+                    }
+                }
+
+                // Weight Range
+                if (document.getElementById('weight-checkbox-range').checked) {
+                    const weightFrom = document.getElementById('weight-from').value;
+                    const weightTo = document.getElementById('weight-to').value;
+                    if (weightFrom || weightTo) {
+                        filters.weightDetails.weightFrom = weightFrom;
+                        filters.weightDetails.weightTo = weightTo;
+                    }
+                }
+            }
+
+            return filters;
+        }
+    </script>
+</body>
+
+</html>
